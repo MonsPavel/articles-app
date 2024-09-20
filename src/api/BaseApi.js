@@ -2,7 +2,7 @@ import axiosInstance from '../helpers/axios';
 
 // eslint-disable-next-line import/prefer-default-export
 export class BaseApi {
-  endpointPrefix = 'api';
+  endpointPrefix = '';
 
   endpoint = '';
 

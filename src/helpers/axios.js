@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = '';
+const baseURL = 'https://jsonplaceholder.typicode.com';
 
 const axiosInstance = axios.create({
   validateStatus(status) {
