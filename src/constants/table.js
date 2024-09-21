@@ -34,7 +34,26 @@ const articlesTable = [
   },
 ];
 
+const allArticlesTable = [
+  {
+    title: 'Автор',
+    sortable: false,
+    key: 'name',
+  },
+  {
+    title: 'Статья',
+    sortable: false,
+    key: 'title',
+  },
+  {
+    title: '',
+    sortable: false,
+    key: 'actions',
+  },
+];
+
 export {
   authorsHeaders,
   articlesTable,
+  allArticlesTable,
 };
