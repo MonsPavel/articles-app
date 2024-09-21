@@ -1,20 +1,29 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useAuthorsStore } from '../stores/authors';
+import usePromise from '../composables/promise';
+import { authorsHeaders } from '../constants/table';
 
 const authorsStore = useAuthorsStore();
 
 const { fetchAuthors } = authorsStore;
+const { loading, exec, data: authors } = usePromise(fetchAuthors);
 
-const authors = ref([]);
+const authorsCount = computed(() => authors.value?.length || 0);
 
-onMounted(async () => {
-  authors.value = await fetchAuthors();
+onMounted(() => {
+  exec();
 });
 </script>
 
 <template>
   <div>
-    {{ authors }}
+    <v-data-table-server
+      :items="authors || []"
+      :loading="loading"
+      :headers="authorsHeaders"
+      :hide-default-footer="true"
+      :items-length="authorsCount"
+    />
   </div>
 </template>
