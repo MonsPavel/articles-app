@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useArticlesStore } from '../stores/articles';
 import { useAuthorsStore } from '../stores/authors';
 import { articlesTable } from '../constants/table';
@@ -8,6 +8,7 @@ import { authorsDetails } from '../constants/details';
 import usePromise from '../composables/promise';
 
 const route = useRoute();
+const router = useRouter();
 const articlesStore = useArticlesStore();
 const authorStore = useAuthorsStore();
 
@@ -25,8 +26,8 @@ const initPage = async () => {
   articles.value = await fetchArticles({ author_id: authorId.value });
 };
 
-const viewArticle = () => {
-
+const viewArticle = (id) => {
+  router.push({ name: 'article', params: { id } });
 };
 
 const { loading, exec } = usePromise(initPage);

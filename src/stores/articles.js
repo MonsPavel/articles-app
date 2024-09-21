@@ -12,5 +12,12 @@ export const useArticlesStore = defineStore({
 
       return data;
     },
+
+    async fetchArticle(id) {
+      const api = new ArticlesApi(id);
+      const { data } = await api.fetchArticle(id);
+
+      return data;
+    },
   },
 });
