@@ -12,5 +12,12 @@ export const useAuthorsStore = defineStore({
 
       return data;
     },
+
+    async fetchAuthor(id) {
+      const api = new AuthorsApi(id);
+      const { data } = await api.fetchAuthor(id);
+
+      return data;
+    },
   },
 });

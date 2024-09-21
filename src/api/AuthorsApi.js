@@ -7,4 +7,10 @@ export default class AuthorsApi extends BaseApi {
     const url = 'users';
     return this.request('GET', url, { params, ...config });
   }
+
+  fetchAuthor(id, config = {}) {
+    const url = `users/${id}`;
+
+    return this.request('GET', url, { ...config });
+  }
 }
