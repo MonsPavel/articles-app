@@ -30,7 +30,7 @@ const viewArticle = (id) => {
   router.push({ name: 'article', params: { id } });
 };
 
-const { loading, exec } = usePromise(initPage);
+const { loading, exec, error } = usePromise(initPage);
 
 onMounted(() => {
   exec();
@@ -39,33 +39,39 @@ onMounted(() => {
 
 <template>
   <div>
-    <h1>
-      {{ authorName }}
-    </h1>
+    <div v-if="!error">
+      <h1>
+        {{ authorName }}
+      </h1>
 
-    <div v-for="{ title, key } in authorsDetails" :key="key" class="d-flex">
-      <div class="author-description-title">{{ title }}</div>
-      <div class="author-description-value">{{ author[key] }}</div>
+      <div v-for="{ title, key } in authorsDetails" :key="key" class="d-flex">
+        <div class="author-description-title">{{ title }}</div>
+        <div class="author-description-value">{{ author[key] }}</div>
+      </div>
+
+      <v-data-table-server
+        :items="articles || []"
+        :loading="loading"
+        :headers="articlesTable"
+        :hide-default-footer="true"
+        :items-length="0"
+      >
+        <template v-slot:item.actions="{ item }">
+          <div class="d-flex">
+            <v-btn
+              class="ma-2"
+              icon="mdi-eye"
+              variant="text"
+              @click="viewArticle(item.id)"
+            />
+          </div>
+        </template>
+      </v-data-table-server>
     </div>
 
-    <v-data-table-server
-      :items="articles || []"
-      :loading="loading"
-      :headers="articlesTable"
-      :hide-default-footer="true"
-      :items-length="0"
-    >
-      <template v-slot:item.actions="{ item }">
-        <div class="d-flex">
-          <v-btn
-            class="ma-2"
-            icon="mdi-eye"
-            variant="text"
-            @click="viewArticle(item.id)"
-          />
-        </div>
-      </template>
-    </v-data-table-server>
+    <div v-else>
+      Автор не найден
+    </div>
   </div>
 </template>
 
