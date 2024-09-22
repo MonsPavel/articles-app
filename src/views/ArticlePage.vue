@@ -22,12 +22,20 @@ onMounted(() => {
 
 <template>
   <v-skeleton-loader type="article" :loading="loading">
-    <h1>
-      {{ articleTitle }}
-    </h1>
+    <v-col>
+      <v-btn class="mb-3" @click="$router.go(-1)">
+        Назад
+      </v-btn>
 
-    <div>
-      {{ articleContent }}
-    </div>
+      <div>
+        <h1>
+          {{ articleTitle }}
+        </h1>
+
+        <div>
+          {{ articleContent }}
+        </div>
+      </div>
+    </v-col>
   </v-skeleton-loader>
 </template>
