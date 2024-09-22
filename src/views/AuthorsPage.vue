@@ -11,8 +11,6 @@ const authorsStore = useAuthorsStore();
 const { fetchAuthors } = authorsStore;
 const { loading, exec, data: authors } = usePromise(fetchAuthors);
 
-const authorsCount = computed(() => authors.value?.length || 0);
-
 const viewAuthor = (id) => {
   router.push({ name: 'author', params: { id } });
 };
@@ -29,7 +27,7 @@ onMounted(() => {
       :loading="loading"
       :headers="authorsHeaders"
       :hide-default-footer="true"
-      :items-length="authorsCount"
+      :items-length="0"
     >
       <template v-slot:item.actions="{ item }">
         <div class="d-flex">

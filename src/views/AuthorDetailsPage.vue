@@ -53,7 +53,7 @@ onMounted(() => {
       :loading="loading"
       :headers="articlesTable"
       :hide-default-footer="true"
-      :items-length="authorsCount"
+      :items-length="0"
     >
       <template v-slot:item.actions="{ item }">
         <div class="d-flex">
