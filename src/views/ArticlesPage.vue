@@ -113,6 +113,7 @@ onMounted(() => {
       :loading="loading"
       :headers="allArticlesTable"
       :hide-default-footer="true"
+      :items-length="0"
     >
       <template v-slot:item.viewed="{ item }">
         <div class="d-flex">
