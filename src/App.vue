@@ -33,6 +33,5 @@ const goTo = (to) => {
 <style scoped>
 .content{
   margin: 90px;
-
 }
 </style>
