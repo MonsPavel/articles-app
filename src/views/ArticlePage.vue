@@ -8,7 +8,9 @@ const route = useRoute();
 const articlesStore = useArticlesStore();
 
 const { fetchArticle, setViewed } = articlesStore;
-const { loading, exec, data: article } = usePromise(fetchArticle);
+const {
+  loading, exec, data: article, error,
+} = usePromise(fetchArticle);
 
 const articleId = computed(() => +route.params.id);
 const articleTitle = computed(() => article.value?.title || '');
@@ -22,7 +24,7 @@ onMounted(() => {
 
 <template>
   <v-skeleton-loader type="article" :loading="loading">
-    <v-col>
+    <v-col v-if="!error">
       <v-btn class="mb-3" @click="$router.go(-1)">
         Назад
       </v-btn>
@@ -37,5 +39,15 @@ onMounted(() => {
         </div>
       </div>
     </v-col>
+
+    <div>
+      <v-btn class="mb-3" @click="$router.go(-1)">
+        Назад
+      </v-btn>
+
+      <div>
+        Статья не найдена
+      </div>
+    </div>
   </v-skeleton-loader>
 </template>
