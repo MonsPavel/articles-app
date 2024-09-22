@@ -7,7 +7,7 @@ import usePromise from '../composables/promise';
 const route = useRoute();
 const articlesStore = useArticlesStore();
 
-const { fetchArticle } = articlesStore;
+const { fetchArticle, setViewed } = articlesStore;
 const { loading, exec, data: article } = usePromise(fetchArticle);
 
 const articleId = computed(() => +route.params.id);
@@ -16,6 +16,7 @@ const articleContent = computed(() => article.value?.body || '');
 
 onMounted(() => {
   exec(articleId.value);
+  setViewed(articleId.value);
 });
 </script>
 

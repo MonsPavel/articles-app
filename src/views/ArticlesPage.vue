@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
 import { useArticlesStore } from '../stores/articles';
 import { useAuthorsStore } from '../stores/authors';
 import { allArticlesTable } from '../constants/table';
@@ -13,15 +14,20 @@ const authorStore = useAuthorsStore();
 const { fetchArticles } = articlesStore;
 const { fetchAuthors } = authorStore;
 
+const { getViewedArticles } = storeToRefs(articlesStore);
+
 const authors = ref([]);
 const articles = ref([]);
 
-const tableData = computed(() => articles.value.map((item) => ({ ...item, ...authors.value[item.userId] })));
+const mappedAuthors = computed(() => (authors.value?.reduce((acc, item) => ({ ...acc, [item.id]: item }), {})));
+
+const tableData = computed(() => articles.value.map((item) => ({
+  ...item, ...mappedAuthors.value[item.userId], id: item.id, viewed: getViewedArticles.value[item.id],
+})));
 
 const initPage = async () => {
-  const data = await fetchAuthors();
   articles.value = await fetchArticles();
-  authors.value = data.reduce((acc, item) => ({ ...acc, [item.id]: item }), {});
+  authors.value = await fetchAuthors();
 };
 
 const { loading, exec } = usePromise(initPage);
@@ -43,6 +49,12 @@ onMounted(() => {
       :headers="allArticlesTable"
       :hide-default-footer="true"
     >
+      <template v-slot:item.viewed="{ item }">
+        <div class="d-flex">
+          <v-icon v-if="item.viewed" color="teal-darken-3" icon="mdi-check" />
+          <v-icon v-else color="red-darken-3" icon="mdi-close" />
+        </div>
+      </template>
       <template v-slot:item.actions="{ item }">
         <div class="d-flex">
           <v-btn

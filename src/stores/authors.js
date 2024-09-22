@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import AuthorsApi from '../api/AuthorsApi';
 
+// eslint-disable-next-line import/prefer-default-export
 export const useAuthorsStore = defineStore({
   id: 'authors',
   state: () => ({}),

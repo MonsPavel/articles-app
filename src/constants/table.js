@@ -46,6 +46,11 @@ const allArticlesTable = [
     key: 'title',
   },
   {
+    title: 'Просмотрено',
+    sortable: false,
+    key: 'viewed',
+  },
+  {
     title: '',
     sortable: false,
     key: 'actions',
