@@ -33,15 +33,17 @@ const tableData = computed(() => {
     viewed: getViewedArticles.value[item.id] || false,
   }));
 
-  if (String(viewFilter.value)) {
+  if (viewFilter.value) {
     mappedArticles = mappedArticles.filter((item) => String(item.viewed) === String(viewFilter.value));
   }
 
   const id = author.value?.id || author.value;
 
-  if (author.value?.id || author.value) {
-    mappedArticles = mappedArticles.filter((item) => item.userId === id);
+  if (!id) {
+    return mappedArticles;
   }
+
+  mappedArticles = mappedArticles.filter((item) => item.userId === id);
 
   return mappedArticles;
 });
