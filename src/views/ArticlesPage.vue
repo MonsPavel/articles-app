@@ -20,8 +20,7 @@ const { getViewedArticles } = storeToRefs(articlesStore);
 
 const authors = ref([]);
 const articles = ref([]);
-const author = ref(null);
-const viewFilter = ref('');
+const filter = ref({});
 
 const mappedAuthors = computed(() => (authors.value?.reduce((acc, item) => ({ ...acc, [item.id]: item }), {})));
 
@@ -33,11 +32,11 @@ const tableData = computed(() => {
     viewed: getViewedArticles.value[item.id] || false,
   }));
 
-  if (viewFilter.value) {
-    mappedArticles = mappedArticles.filter((item) => String(item.viewed) === String(viewFilter.value));
+  if (filter.value.viewed) {
+    mappedArticles = mappedArticles.filter((item) => String(item.viewed) === String(filter.value.viewed));
   }
 
-  const id = author.value?.id || author.value;
+  const id = filter.value?.author?.id || filter.value?.author;
 
   if (!id) {
     return mappedArticles;
@@ -51,37 +50,21 @@ const tableData = computed(() => {
 const setFilters = () => {
   const { query } = route;
   const authorId = query.author_id;
-  viewFilter.value = query.viewed;
-  author.value = mappedAuthors.value[authorId];
+  filter.value.viewed = query.viewed;
+  filter.value.author = mappedAuthors.value[authorId];
 };
 
-const setAuthor = () => {
+const setFilter = (filtername, queryKey) => {
   const { query } = route;
 
   const newQuery = {
     ...query,
   };
 
-  if (author.value) {
-    newQuery.author_id = author.value;
+  if (filter.value[filtername]) {
+    newQuery[queryKey] = filter.value[filtername];
   } else {
-    delete newQuery.author_id;
-  }
-
-  router.push({ name: 'articles', query: { ...newQuery } });
-};
-
-const setViewFilter = () => {
-  const { query } = route;
-
-  const newQuery = {
-    ...query,
-  };
-
-  if (String(viewFilter.value)) {
-    newQuery.viewed = viewFilter.value;
-  } else {
-    delete newQuery.viewed;
+    delete newQuery[queryKey];
   }
 
   router.push({ name: 'articles', query: { ...newQuery } });
@@ -109,19 +92,19 @@ onMounted(() => {
   <div>
     <div class="d-flex articles filters">
       <v-autocomplete
-        v-model="author"
+        v-model="filter.author"
         :items="authors"
         item-title="name"
         item-value="id"
-        @update:model-value="setAuthor"
+        @update:model-value="() => setFilter('author', 'author_id')"
       />
 
       <v-select
-        v-model="viewFilter"
+        v-model="filter.viewed"
         :items="viewFilters"
         item-title="title"
         item-value="key"
-        @update:model-value="setViewFilter"
+        @update:model-value="() => setFilter('viewed', 'viewed')"
       />
     </div>
 
