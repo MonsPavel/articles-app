@@ -11,6 +11,6 @@ export default class ArticlesApi extends BaseApi {
   fetchArticle(id, config = {}) {
     const url = `posts/${id}`;
 
-    return this.request('GET', url, { ...config });
+    return this.request('GET', url, { ...config }, true);
   }
 }

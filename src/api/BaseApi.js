@@ -1,4 +1,8 @@
+import { setupCache } from 'axios-cache-interceptor';
+
 import axiosInstance from '../helpers/axios';
+
+const axios = setupCache(axiosInstance);
 
 // eslint-disable-next-line import/prefer-default-export
 export class BaseApi {
@@ -16,9 +20,12 @@ export class BaseApi {
     return fullUrl;
   }
 
-  request(method, url, config) {
+  request(method, url, config, cache = false) {
     const requestUrl = this.getUrl(url);
-    const requestConfig = { ...config, method, url: requestUrl };
-    return axiosInstance(requestConfig);
+    const requestConfig = {
+      ...config, method, url: requestUrl, cache,
+    };
+
+    return axios(requestConfig);
   }
 }
