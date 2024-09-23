@@ -5,11 +5,12 @@ import { storeToRefs } from 'pinia';
 import { useArticlesStore } from '../stores/articles';
 import { useAuthorsStore } from '../stores/authors';
 import { allArticlesTable } from '../constants/table';
-import usePromise from '../composables/promise';
 import { viewFilters } from '../constants/filters';
 
+import usePromise from '../composables/promise';
+import useFilters from '../composables/filters';
+
 const router = useRouter();
-const route = useRoute();
 const articlesStore = useArticlesStore();
 const authorStore = useAuthorsStore();
 
@@ -18,9 +19,10 @@ const { fetchAuthors } = authorStore;
 
 const { getViewedArticles } = storeToRefs(articlesStore);
 
+const { setFilter, setFilters, filter } = useFilters('articles', ['author_id', 'viewed']);
+
 const authors = ref([]);
 const articles = ref([]);
-const filter = ref({});
 
 const mappedAuthors = computed(() => (authors.value?.reduce((acc, item) => ({ ...acc, [item.id]: item }), {})));
 
@@ -36,39 +38,16 @@ const tableData = computed(() => {
     mappedArticles = mappedArticles.filter((item) => String(item.viewed) === String(filter.value.viewed));
   }
 
-  const id = filter.value?.author?.id || filter.value?.author;
+  const id = filter.value?.author_id;
 
   if (!id) {
     return mappedArticles;
   }
 
-  mappedArticles = mappedArticles.filter((item) => item.userId === id);
+  mappedArticles = mappedArticles.filter((item) => item.userId === +id);
 
   return mappedArticles;
 });
-
-const setFilters = () => {
-  const { query } = route;
-  const authorId = query.author_id;
-  filter.value.viewed = query.viewed;
-  filter.value.author = mappedAuthors.value[authorId];
-};
-
-const setFilter = (filtername, queryKey) => {
-  const { query } = route;
-
-  const newQuery = {
-    ...query,
-  };
-
-  if (filter.value[filtername]) {
-    newQuery[queryKey] = filter.value[filtername];
-  } else {
-    delete newQuery[queryKey];
-  }
-
-  router.push({ name: 'articles', query: { ...newQuery } });
-};
 
 const initPage = async () => {
   authors.value = await fetchAuthors();
@@ -92,19 +71,19 @@ onMounted(() => {
   <div>
     <div class="d-flex articles filters">
       <v-autocomplete
-        v-model="filter.author"
+        :model-value="mappedAuthors[filter.author_id]"
         :items="authors"
         item-title="name"
         item-value="id"
-        @update:model-value="() => setFilter('author', 'author_id')"
+        @update:model-value="(val) => setFilter('author_id', val)"
       />
 
       <v-select
-        v-model="filter.viewed"
+        :model-value="filter.viewed"
         :items="viewFilters"
         item-title="title"
         item-value="key"
-        @update:model-value="() => setFilter('viewed', 'viewed')"
+        @update:model-value="(val) => setFilter('viewed', val)"
       />
     </div>
 
